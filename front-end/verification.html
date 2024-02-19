@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Code Form</title>
+    <!-- Vue.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+<body>
+
+<div id="app">
+    <h2>Verification Code Form</h2>
+    <form @submit.prevent="submitVerification">
+        <label for="verificationCode">Verification Code:</label><br>
+        <input type="text" v-model="verificationCode" id="verificationCode" name="verificationCode" required><br><br>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script>
+    new Vue({
+      el: '#app',
+      data: {
+        verificationCode: ''
+      },
+      methods: {
+        submitVerification() {
+          // Here you can perform any action you want with the verification code,
+          // for example, sending it to a server-side script via AJAX request.
+          console.log('Verification Code:', this.verificationCode);
+          // Reset the form after submission
+          this.verificationCode = '';
+        }
+      }
+    });
+</script>
+
+</body>
+</html>

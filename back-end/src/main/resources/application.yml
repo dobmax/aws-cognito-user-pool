@@ -1,0 +1,5 @@
+aws:
+  region: eu-central-1
+  user-pool:
+    client-id: 5tgsm7g74od7c4ese7q2cu5kus
+    client-secret: 4ksgkjdh7vlk4e97gihsmhr5h85d6kct1kdtjjocaokgl6tg91l
