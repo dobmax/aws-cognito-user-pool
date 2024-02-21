@@ -22,6 +22,8 @@
         <input type="password" v-model="password" id="password" name="password" required><br><br>
         <button type="submit">Submit</button>
     </form>
+    <div v-if="successMessage" style="color: green;">{{ successMessage }}</div>
+    <div v-if="errorMessage" style="color: red;">{{ errorMessage }}</div>
 </div>
 
 <script>
@@ -31,7 +33,9 @@
         firstName: '',
         lastName: '',
         email: '',
-        password: ''
+        password: '',
+        successMessage: '',
+        errorMessage: ''
       },
       methods: {
         submitForm() {
@@ -64,9 +68,15 @@
             this.lastName = '';
             this.email = '';
             this.password = '';
+            // Display success message
+            this.successMessage = 'Successfully registered';
+            this.errorMessage = ''; // Clear error message
           })
           .catch(error => {
             console.error('Error during sign-up:', error);
+            // Display error message
+            this.errorMessage = 'Registration failed';
+            this.successMessage = ''; // Clear success message
           });
         }
       }

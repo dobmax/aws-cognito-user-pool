@@ -14,4 +14,12 @@ class SignUpController(val userPoolService: UserPoolService) {
     ) {
         userPoolService.signUp(newUser)
     }
+
+    @PostMapping
+    @RequestMapping("/confirm")
+    fun confirm(
+        @RequestBody confirmSignUp: ConfirmSignUpRequestDto,
+    ) {
+        userPoolService.confirm(confirmSignUp)
+    }
 }

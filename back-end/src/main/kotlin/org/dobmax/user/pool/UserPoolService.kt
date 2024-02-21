@@ -7,12 +7,12 @@ import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityPr
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType.builder
 import software.amazon.awssdk.services.cognitoidentityprovider.model.CognitoIdentityProviderException
+import software.amazon.awssdk.services.cognitoidentityprovider.model.ConfirmSignUpRequest
 import software.amazon.awssdk.services.cognitoidentityprovider.model.SignUpRequest
 import java.nio.charset.StandardCharsets
 import java.util.Base64
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
-import kotlin.system.exitProcess
 
 const val HMAC_SHA256_ALGORITHM = "HmacSHA256"
 
@@ -32,16 +32,14 @@ class UserPoolService(
                     .username(newUser.email)
                     .password(newUser.password)
                     .clientId(clientId)
-                    .secretHash(newUser.calculateSecretHash())
+                    .secretHash(calculateSecretHash(newUser.email))
                     .build()
 
             identityProviderClient.signUp(req)
             log.info("User has been signed up ")
-            exitProcess(1)
         } catch (ex: CognitoIdentityProviderException) {
             log.info("Error happened", ex)
             log.info("Details: {}", ex.awsErrorDetails())
-            exitProcess(-1)
         }
     }
 
@@ -62,7 +60,7 @@ class UserPoolService(
         )
 
     @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown", "SwallowedException")
-    private fun SignUpRequestDto.calculateSecretHash(): String {
+    private fun calculateSecretHash(email: String): String {
         val signingKey =
             SecretKeySpec(
                 clientSecret.toByteArray(StandardCharsets.UTF_8),
@@ -76,6 +74,23 @@ class UserPoolService(
             return Base64.getEncoder().encodeToString(rawHmac)
         } catch (e: Exception) {
             throw RuntimeException("Error while calculating ")
+        }
+    }
+
+    fun confirm(confirmSignUpDto: ConfirmSignUpRequestDto) {
+        try {
+            val req =
+                ConfirmSignUpRequest.builder()
+                    .clientId(clientId)
+                    .secretHash(calculateSecretHash(confirmSignUpDto.email))
+                    .username(confirmSignUpDto.email)
+                    .confirmationCode(confirmSignUpDto.code)
+                    .build()
+            identityProviderClient.confirmSignUp(req)
+            log.info("User has been confirmed")
+        } catch (ex: CognitoIdentityProviderException) {
+            log.info("Error happened", ex)
+            log.info("Details: {}", ex.awsErrorDetails())
         }
     }
 }
