@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version libs.versions.spring.boot apply false
+    id("org.springframework.boot") version libs.versions.spring.boot
     id("io.spring.dependency-management") version libs.versions.spring.dependency.management
     id("org.jlleitschuh.gradle.ktlint") version libs.versions.gradle.ktlint
     id("io.gitlab.arturbosch.detekt") version libs.versions.gradle.detekt
@@ -23,10 +23,11 @@ repositories {
 dependencies {
     detektPlugins(libs.detekt.formatting)
 
-    implementation(platform("software.amazon.awssdk:bom:2.23.17"))
-    implementation("software.amazon.awssdk:cognitoidentityprovider")
+    implementation(platform(libs.aws.sdk.bom))
+    implementation(libs.aws.sdk.cognitoidentityprovider)
 
     implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.actuator)
 }
 
 tasks.withType<KotlinCompile> {
@@ -38,6 +39,10 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+springBoot {
+    mainClass.set("org.dobmax.user.pool.UserPoolApplicationKt")
 }
 
 detekt {
